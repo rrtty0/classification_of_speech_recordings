@@ -15,12 +15,11 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import RandomForestClassifier
 
 
-def normalize_duration(class_, filename, minimum_duration):
-    song_name = str(os.getcwd()) + f'\\{class_}\\{filename}'
-    y, sr = librosa.load(song_name, sr=22050, mono=True)
+def normalize_duration(full_song_name, minimum_duration):
+    y, sr = librosa.load(full_song_name, sr=22050, mono=True)
     file_duration = librosa.get_duration(y, sr)
     delta = file_duration - minimum_duration
-    y_new, sr = librosa.load(song_name, sr=22050, mono=True, offset=delta / 2, duration=minimum_duration)
+    y_new, sr = librosa.load(full_song_name, sr=22050, mono=True, offset=delta / 2, duration=minimum_duration)
     return y_new, sr
 
 def create_train_csv():
@@ -59,9 +58,9 @@ def create_results_csvs():
 def train_to_csv():
     print('\nTrain split of songs:')
     for class_ in classes:
-        for song_filename in os.listdir(path_to_root + f'{class_}'):
-            # y, sr = normalize_duration(class_, song_filename, minimum_duration)
-            full_song_name = path_to_root + f'{class_}\\{song_filename}'
+        for song_filename in os.listdir(path_to_root + dataset_train_folder + f'\\{class_}'):
+            full_song_name = path_to_root + dataset_train_folder + f'\\{class_}\\{song_filename}'
+            # y, sr = normalize_duration(full_song_name, minimum_duration)
             y, sr = librosa.load(full_song_name, sr=22050, mono=True)
             print('Class: ' + class_ + '; Song filename: ' + song_filename + '; Duration: ' + str(librosa.get_duration(y)))
             chroma_stft, rms, spec_cent, spec_bw, rolloff, zcr, mfcc = create_features(y, sr)
@@ -72,8 +71,8 @@ def train_to_csv():
 def test_to_csv():
     print('\nTest split of songs:')
     for song_filename in os.listdir(path_to_root + dataset_test_folder):
-        # y, sr = normalize_duration(dataset_test_folder, song_filename, minimum_duration)
         full_song_name = path_to_root + dataset_test_folder + f'\\{song_filename}'
+        # y, sr = normalize_duration(full_song_name, minimum_duration)
         y, sr = librosa.load(full_song_name, sr=22050, mono=True)
         print('Song filename: ' + song_filename + '; Duration: ' + str(librosa.get_duration(y)))
         chroma_stft, rms, spec_cent, spec_bw, rolloff, zcr, mfcc = create_features(y, sr)
@@ -274,39 +273,40 @@ def get_probabilities_for_predict(X_test_scl, y_test, clf):
 
 
 path_to_root = str(os.getcwd()) + '\\'
-dataset_train_file = 'dataset_train.csv'
-dataset_test_file = 'dataset_test.csv'
-# dataset_train_file = 'dataset_norm_train.csv'
-# dataset_test_file = 'dataset_norm_test.csv'
-# dataset_train_file = 'dataset1_train.csv'
-# dataset_test_file = 'dataset1_test.csv'
-# dataset_train_file = 'dataset1_norm_train.csv'
-# dataset_test_file = 'dataset1_norm_test.csv'
+dataset_train_file = path_to_root + 'datasets\\' + 'dataset_train.csv'
+dataset_test_file = path_to_root + 'datasets\\' + 'dataset_test.csv'
+# dataset_train_file = path_to_root + 'datasets\\' + 'dataset_norm_train.csv'
+# dataset_test_file = path_to_root + 'datasets\\' + 'dataset_norm_test.csv'
+# dataset_train_file = path_to_root + 'datasets\\' + 'dataset1_train.csv'
+# dataset_test_file = path_to_root + 'datasets\\' + 'dataset1_test.csv'
+# dataset_train_file = path_to_root + 'datasets\\' + 'dataset1_norm_train.csv'
+# dataset_test_file = path_to_root + 'datasets\\' + 'dataset1_norm_test.csv'
 
-result_file_dtc = 'result_dtc.csv'
-result_file_neigh = 'result_neigh.csv'
-result_file_svc = 'result_svc.csv'
-result_file_rfc = 'result_rfc.csv'
-result_file_gbc = 'result_gbc.csv'
-# result_file_dtc = 'result_norm_dtc.csv'
-# result_file_neigh = 'result_norm_neigh.csv'
-# result_file_svc = 'result_norm_svc.csv'
-# result_file_rfc = 'result_norm_rfc.csv'
-# result_file_gbc = 'result_norm_gbc.csv'
-# result_file_dtc = 'result1_dtc.csv'
-# result_file_neigh = 'result1_neigh.csv'
-# result_file_svc = 'result1_svc.csv'
-# result_file_rfc = 'result1_rfc.csv'
-# result_file_gbc = 'result1_gbc.csv'
-# result_file_dtc = 'result1_norm_dtc.csv'
-# result_file_neigh = 'result1_norm_neigh.csv'
-# result_file_svc = 'result1_norm_svc.csv'
-# result_file_rfc = 'result1_norm_rfc.csv'
-# result_file_gbc = 'result1_norm_gbc.csv'
+result_file_dtc = path_to_root + 'results\\' + 'result_dtc.csv'
+result_file_neigh = path_to_root + 'results\\' + 'result_neigh.csv'
+result_file_svc = path_to_root + 'results\\' + 'result_svc.csv'
+result_file_rfc = path_to_root + 'results\\' + 'result_rfc.csv'
+result_file_gbc = path_to_root + 'results\\' + 'result_gbc.csv'
+# result_file_dtc = path_to_root + 'results\\' + 'result_norm_dtc.csv'
+# result_file_neigh = path_to_root + 'results\\' + 'result_norm_neigh.csv'
+# result_file_svc = path_to_root + 'results\\' + 'result_norm_svc.csv'
+# result_file_rfc = path_to_root + 'results\\' + 'result_norm_rfc.csv'
+# result_file_gbc = path_to_root + 'results\\' + 'result_norm_gbc.csv'
+# result_file_dtc = path_to_root + 'results\\' + 'result1_dtc.csv'
+# result_file_neigh = path_to_root + 'results\\' + 'result1_neigh.csv'
+# result_file_svc = path_to_root + 'results\\' + 'result1_svc.csv'
+# result_file_rfc = path_to_root + 'results\\' + 'result1_rfc.csv'
+# result_file_gbc = path_to_root + 'results\\' + 'result1_gbc.csv'
+# result_file_dtc = path_to_root + 'results\\' + 'result1_norm_dtc.csv'
+# result_file_neigh = path_to_root + 'results\\' + 'result1_norm_neigh.csv'
+# result_file_svc = path_to_root + 'results\\' + 'result1_norm_svc.csv'
+# result_file_rfc = path_to_root + 'results\\' + 'result1_norm_rfc.csv'
+# result_file_gbc = path_to_root + 'results\\' + 'result1_norm_gbc.csv'
 
 classes = '1 2 3 4 5'.split()
 
 # minimum_duration = 2.9
+dataset_train_folder = 'train_data'
 dataset_test_folder = 'test_data'
 
 create_train_csv()
