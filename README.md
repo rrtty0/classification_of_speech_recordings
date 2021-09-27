@@ -40,7 +40,7 @@ To use this project you need:
 ## How To Contribute
 1. _Clone repo_ and _create a new branch_:
 ```
-        $ git clone https://github.com/rrtty0/puzzle_8.git
+        $ git clone classification_of_speech_recordings.git
         $ git branch name_for_new_branch
         $ git checkout name_for_new_branch
 ```
